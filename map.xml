@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map proto="1.3.3">
+	<name>Atalaya</name>
+	<version>0.1.0</version>
+	<objective>敵拠点のモニュメントの破壊と溶岩の流出。 / Destroy the enemy's emerald monument and leak lava from the enemy's obsidian core.</objective>
+
+	<authors>
+		<author>EEE</author>
+	</authors>
+
+	<teams>
+		<team max="16" color="blue">Blue Team</team>
+		<team max="16" color="white">White Team</team>
+	</teams>
+
+	<!-- チームごとの初期装備 -->
+	<kits>
+		<!--  共通装備  -->
+		<kit name="default">
+			<!-- 装備 -->
+			<leggings bind="true">Gold Leggings</leggings>
+			<!-- ホットバー -->
+			<item slot="0">Diamond Sword</item>
+			<item slot="1">Bow</item>
+			<item slot="2" enchantment="DAMAGE ALL:2">Diamond Pickaxe</item>
+			<item slot="3">Stone Axe</item>
+			<item slot="5" amount="64">Cooked Beef</item>
+			<item slot="6" amount="16">Vine</item>
+			<item slot="8" amount="64" damage="2">Log</item>
+			<!-- インベントリ -->
+			<item slot="9" amount="64" damage="11">Arrow</item>
+			<!-- ポーション効果 -->
+			<potion duration="5" amplifier="3">Damage Resistance</potion>
+			<potion duration="2" amplifier="3">Increase Damage</potion>
+		</kit>
+		<!-- 青装備 -->
+		<kit name="blue" parents="default">
+			<chestplate color="5555ff" damage="-3000" bind="true">Leather Chestplate</chestplate>
+			<item slot="16" amount="32" damage="14">Stained Glass</item>
+		</kit>
+		<!-- 白装備 -->
+		<kit name="white" parents="default">
+			<chestplate color="ffffff" damage="-3000" bind="true">Leather Chestplate</chestplate>
+			<item slot="16" amount="32" damage="14">Stained Glass</item>
+		</kit>
+	</kits>
+
+	<!-- スポーン位置 -->
+	<spawns>
+		<spawn team="blue" yaw="180" kit="blue">
+			<cuboid min="-34,75,85" max="-31,74,86" />
+			<cuboid min="31,75,85" max="34,74,86" />
+		</spawn>
+		<spawn team="white" yaw="0" kit="white">
+			<cuboid min="31,75,-86" max="34,74,-85" />
+			<cuboid min="-34,75,-86" max="-31,74,-85" />
+		</spawn>
+		<default yaw="-90">
+			<cuboid min="-54,35,-1" max="-52,35,1" />
+		</default>
+	</spawns>
+
+	<!-- フィルター定義 -->
+	<filters>
+		<filter name="outside">
+			<not>
+				<void/>
+			</not>
+		</filter>
+		<!-- 鉄鉱石の破壊を許可 -->
+		<filter name="only-iron-ore" parents="deny-blocks">
+			<allow>
+				<block>Iron Ore</block>
+			</allow>
+		</filter>
+	</filters>
+
+	<!-- 領域定義 -->
+	<regions>
+		<!-- マップ全体 -->
+		<rectangle name="map" min="-44,-92" max="44,92"/>
+		<!-- チーム拠点定義と保護 -->
+		<cuboid name="blue-base" min="-44,0,68" max="44,74,92"/>
+		<cuboid name="white-base" min="-44,0,-92" max="44,74,-68"/>
+		<union name="Base">
+			<region name="blue-base"/>
+			<region name="white-base"/>
+		</union>
+		<apply block-break="only-iron-ore" block-place="deny-blocks" message="`4You may not modify base./拠点は編集できません。">
+			<region name="Base"/>
+		</apply>
+		<!-- 領域外 -->
+		<apply block="outside" message="`4You may not modify void area./範囲外は編集できません。">
+			<rectangle min="-oo,-oo" max="oo,oo"/>
+		</apply>
+	</regions>
+
+	<itemremove>
+		<item>Iron Pickaxe</item>
+		<item>Stone Axe</item>
+		<item>Bow</item>
+		<item>Cooked Beef</item>
+		<item>Vine</item>
+		<item>Leather Chestplate</item>
+		<item>Gold Leggings</item>
+		<item>Diamond Sword</item>
+		<item>Wood</item>
+	</itemremove>
+
+	<!-- モニュメント定義 -->
+	<destroyables show-progress="false" materials="Emerald Block" completion="100%">
+		<destroyable owner="blue" name="Emerald X">
+			<cuboid min="-34,16,18" max="-31,19,21"/>
+		</destroyable>
+		<destroyable owner="blue" name="Emerald Y">
+			<cuboid min="31,16,18" max="34,19,21"/>
+		</destroyable>
+
+		<destroyable owner="white" name="Emerald X">
+			<cuboid min="-31,16,-21" max="34,19,-18"/>
+		</destroyable>
+		<destroyable owner="white" name="Emerald Y">
+			<cuboid min="-34,16,-21" max="-31,19,-18"/>
+		</destroyable>
+	</destroyables>
+
+	<!-- コア定義 -->
+	<cores material="obsidian" leak="5">
+		<core team="blue">
+			<cuboid min="-4,19,37" max="4,22,40"/>
+		</core>
+		<core team="white">
+			<cuboid min="-4,19,-37" max="4,22,-40"/>
+		</core>
+	</cores>
+
+	<!-- キル報酬 -->
+	<killreward>
+		<item amount="1">Golden Apple</item>
+		<item ammount="16">Arrow</item>
+	</killreward>
+
+	<!-- ブロックドロップ -->
+	<blockdrops>
+		<!-- 鉄鉱石ブロック破壊でインゴットをドロップ -->
+		<rule>
+			<region>
+				<region name="Base"/>
+			</region>
+			<filter>
+				<block>Iron Ore</block>
+			</filter>
+			<drops>
+				<item>Iron Ingot</item>
+			</drops>
+			<direct>true</direct>
+			<replacement>Iron Ore</replacement>
+			<wrongtool>true</wrongtool><!-- 適正ツール使用時のみドロップ -->
+			<restore-time>0</restore-time><!-- ブロック破壊でインベントリに直接入る -->
+		</rule>
+		<!-- ブロックドロップ拒否 -->
+		<rule>
+			<region>
+				<region name="map"/>
+			</region>
+			<filter>
+				<block>Emerald Block</block>
+				<block>Gold Block</block>
+				<block>Obsidian</block>
+				<block>Ender Stone</block>
+			</filter>
+		</rule>
+	</blockdrops>
+
+	<!-- 限界高度 -->
+	<maxbuildheight>30</maxbuildheight>
+
+	<!-- ゲームモードの設定(TNTダメージの強化のため) -->
+	<script>
+		<![CDATA[
+			match.on('start', function() {
+				match.getWorld().setDifficulty("HARD");
+			});
+		]]>
+	</script>
+
+
+	<!-- チュートリアル -->
+	<include src="tutorial.xml"/>
+	<tutorial>
+		<stage title="Destroy the Core and Destroy the Monument(DTC and DTM)">
+			<message>
+				<line>This map is a `a`lDestroy the Core and Destroy the Monument `r(DTM and DTC) map.</line>
+				<line>The objective is to destroy the other team's monument and core on their front.</line>
+			</message>
+			<message lang="ja_JP">
+				<line>このマップは`a`lDestroy the Core and Destroy the Monument `r(DTM and DTC)マップです。</line>
+				<line>敵チームのモニュメントとコアを破壊する事が目標になります。</line>
+			</message>
+			<teleport>
+				<point yaw="-90" piitch="30">-52,36,0</point>
+			</teleport>
+		</stage>
+
+		<!-- スポーン場所の説明 -->
+		<stage title="Blue-Base">
+		    <message>
+    			 <line>This is blue team spawn point 1.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>青チームのスポーン場所1。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="180" pitch="30">-32,76,89</point>
+			</teleport>
+		</stage>
+		<stage title="Blue-Base">
+		    <message>
+    			 <line>This is blue team spawn point 2.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>青チームのスポーン場所2。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="180" pitch="30">32,76,89</point>
+			</teleport>
+		</stage>
+		<stage title="White-Base">
+		    <message>
+    			 <line>This is white team spawn point 1.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>白チームのスポーン場所1。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="30">32,76,-89</point>
+			</teleport>
+		</stage>
+		<stage title="White-Base">
+		    <message>
+    			 <line>This is white team spawn point 2.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>白チームのスポーン場所2。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="30">-32,76,-89</point>
+			</teleport>
+		</stage>
+
+
+		<!-- オブジェクトの説明 -->	
+		<stage title="objective-X">
+		    <message>
+    			 <line>This is a objective "X".</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>これがモニュメント"X"です。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="15">-32,18,12</point>
+			</teleport>
+		</stage>
+		<stage title="objective-Y">
+		    <message>
+    			 <line>This is a objective "Y".</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>これがモニュメント"X"です。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="15">32,18,12</point>
+			</teleport>
+		</stage>
+		<stage title="Core">
+		    <message>
+    			 <line>This is a Core.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>これがコアです。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="0" pitch="15">0,22,30</point>
+			</teleport>
+		</stage>
+	</tutorial>
+</map>
