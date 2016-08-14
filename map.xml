@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <map proto="1.3.3">
 	<name>Atalaya</name>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<objective>敵拠点のモニュメントの破壊と溶岩の流出。 / Destroy the enemy's emerald monument and leak lava from the enemy's obsidian core.</objective>
 
 	<authors>
@@ -28,7 +28,7 @@
 			<item slot="6" amount="16">Vine</item>
 			<item slot="8" amount="64" damage="2">Log</item>
 			<!-- インベントリ -->
-			<item slot="9" amount="64" damage="11">Arrow</item>
+			<item slot="9" amount="64" bind="true">Arrow</item>
 			<!-- ポーション効果 -->
 			<potion duration="5" amplifier="3">Damage Resistance</potion>
 			<potion duration="2" amplifier="3">Increase Damage</potion>
@@ -36,12 +36,12 @@
 		<!-- 青装備 -->
 		<kit name="blue" parents="default">
 			<chestplate color="5555ff" damage="-3000" bind="true">Leather Chestplate</chestplate>
-			<item slot="16" amount="32" damage="14">Stained Glass</item>
+			<item slot="7" amount="32" damage="14">Stained Glass</item>
 		</kit>
 		<!-- 白装備 -->
 		<kit name="white" parents="default">
 			<chestplate color="ffffff" damage="-3000" bind="true">Leather Chestplate</chestplate>
-			<item slot="16" amount="32" damage="14">Stained Glass</item>
+			<item slot="7" amount="32" damage="14">Stained Glass</item>
 		</kit>
 	</kits>
 
@@ -62,6 +62,16 @@
 
 	<!-- フィルター定義 -->
 	<filters>
+		<filter name="only-blue" parents="deny-players">
+			<allow>
+				<team>blue</team>
+			</allow>
+		</filter>
+		<filter name="only-white" parents="deny-players">
+			<allow>
+				<team>white</team>
+			</allow>
+		</filter>
 		<filter name="outside">
 			<not>
 				<void/>
@@ -80,14 +90,30 @@
 		<!-- マップ全体 -->
 		<rectangle name="map" min="-44,-92" max="44,92"/>
 		<!-- チーム拠点定義と保護 -->
-		<cuboid name="blue-base" min="-44,0,68" max="44,74,92"/>
-		<cuboid name="white-base" min="-44,0,-92" max="44,74,-68"/>
+		<rectangle name="blue-base" min="-44,68" max="44,92"/>
+		<rectangle name="white-base" min="-44,-92" max="44,-68"/>
 		<union name="Base">
 			<region name="blue-base"/>
 			<region name="white-base"/>
 		</union>
 		<apply block-break="only-iron-ore" block-place="deny-blocks" message="`4You may not modify base./拠点は編集できません。">
 			<region name="Base"/>
+		</apply>
+		<apply enter="only-blue" message="敵拠点に入る事は出来ません。 / You may not enter enemy bases.">
+			<region name="blue-base"/>
+		</apply>
+		<apply enter="only-white" message="敵拠点に入る事は出来ません。 / You may not enter enemy bases.">
+			<region name="white-base"/>
+		</apply>
+		<!-- 拠点前防壁の保護 -->
+		<union name="Barriers">
+			<cuboid min="-42,26,58" max="-21,36,59"/>
+			<cuboid min="21,26,58" max="42,36,59"/>
+			<cuboid min="-42,26,-59" max="-21,36,-58"/>
+			<cuboid min="21,26,-59" max="42,36,-58"/>
+		</union>
+		<apply block-break="deny-break" message="`4You may not modify barriers./防壁は編集できません。">
+			<region name="Barriers"/>
 		</apply>
 		<!-- 領域外 -->
 		<apply block="outside" message="`4You may not modify void area./範囲外は編集できません。">
@@ -127,10 +153,10 @@
 	<!-- コア定義 -->
 	<cores material="obsidian" leak="5">
 		<core team="blue">
-			<cuboid min="-4,19,37" max="4,22,40"/>
+			<cuboid min="-5,19,37" max="4,22,40"/>
 		</core>
 		<core team="white">
-			<cuboid min="-4,19,-37" max="4,22,-40"/>
+			<cuboid min="-5,19,-37" max="4,22,-40"/>
 		</core>
 	</cores>
 
@@ -168,6 +194,7 @@
 				<block>Gold Block</block>
 				<block>Obsidian</block>
 				<block>Ender Stone</block>
+				<block>Beacon</block>
 			</filter>
 		</rule>
 	</blockdrops>
@@ -183,7 +210,6 @@
 			});
 		]]>
 	</script>
-
 
 	<!-- チュートリアル -->
 	<include src="tutorial.xml"/>
@@ -266,7 +292,7 @@
     			 <line>This is a objective "Y".</line>
 			</message>
 		    <message lang="ja_JP">
-			     <line>これがモニュメント"X"です。</line>
+			     <line>これがモニュメント"Y"です。</line>
 		    </message>
    			<teleport>
    				<point yaw="0" pitch="15">32,18,12</point>
@@ -281,6 +307,19 @@
 		    </message>
    			<teleport>
    				<point yaw="0" pitch="15">0,22,30</point>
+			</teleport>
+		</stage>
+
+		<!-- 鉄鉱石の説明 -->
+		<stage title="Iron-Drops">
+		    <message>
+    			 <line>You can gain an iron ingot if you break the iron ore.</line>
+			</message>
+		    <message lang="ja_JP">
+			     <line>この鉄鉱石を破壊すると鉄インゴットを手に入れることができます。</line>
+		    </message>
+   			<teleport>
+   				<point yaw="-45" pitch="15">-30,30,83</point>
 			</teleport>
 		</stage>
 	</tutorial>
