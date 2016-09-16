@@ -35,7 +35,7 @@
 		<!-- 青装備 -->
 		<kit name="blue" parents="default">
 			<chestplate color="5555ff" damage="-3000" bind="true">Leather Chestplate</chestplate>
-			<item slot="7" amount="32" damage="14">Stained Glass</item>
+			<item slot="7" amount="32" damage="11">Stained Glass</item>
 		</kit>
 		<!-- 白装備 -->
 		<kit name="white" parents="default">
