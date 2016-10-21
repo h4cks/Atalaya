@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <map proto="1.3.3">
 	<name>Atalaya</name>
-	<version>0.1.3</version>
+	<version>0.1.4</version>
 	<objective>敵拠点のモニュメントの破壊と溶岩の流出。 / Destroy the enemy's emerald monument and leak lava from the enemy's obsidian core.</objective>
 
 	<authors>
@@ -35,12 +35,12 @@
 		<!-- 青装備 -->
 		<kit name="blue" parents="default">
 			<chestplate color="5555ff" damage="-3000" bind="true">Leather Chestplate</chestplate>
-			<item slot="7" amount="32" damage="11">Stained Glass</item>
+			<item slot="7" amount="32">Glass</item>
 		</kit>
 		<!-- 白装備 -->
 		<kit name="white" parents="default">
 			<chestplate color="ffffff" damage="-3000" bind="true">Leather Chestplate</chestplate>
-			<item slot="7" amount="32" damage="0">Stained Glass</item>
+			<item slot="7" amount="32">Glass</item>
 		</kit>
 	</kits>
 
@@ -139,7 +139,6 @@
 		<item>Gold Leggings</item>
 		<item>Diamond Sword</item>
 		<item>Log</item>
-		<item>Stained Glass</item>
 		<item>Redstone</item>
 		<item>Redstone Torch on</item>
 		<item>Redstone Torch off</item>
